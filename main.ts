@@ -1,6 +1,7 @@
 import { Hono } from "@hono/hono";
 import { serveStatic } from "@hono/hono/deno";
 import { etag } from "@hono/hono/etag";
+import { logger } from "@hono/hono/logger";
 import og from "~/og.tsx";
 import geo from "~/geo.ts";
 import image from "~/image.ts";
@@ -11,6 +12,8 @@ const app = new Hono();
 await initializeImageMagick();
 app.use("*", etag());
 app.use("/favicon.ico", serveStatic({ path: "./favicon.ico" }));
+
+app.use(logger());
 app.get("/", (c) => {
 	return c.text("Cemin Tools");
 });
