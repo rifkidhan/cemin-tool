@@ -1,3 +1,7 @@
 # Cemin Tools
 
-- Open Graph Image Generator
+Helper tool for web.
+
+- OG Image Generator
+- Geolocation
+- Image optimization
