@@ -1,5 +1,5 @@
 import { Hono } from "@hono/hono";
-import { initialize } from "~/lib/initialize-og.ts";
+import { fonts, initialize } from "~/lib/initialize-og.ts";
 import satori from "satori";
 import { Resvg } from "https://esm.sh/@resvg/resvg-wasm";
 
@@ -11,15 +11,7 @@ interface TemplateProps {
 
 const og = new Hono();
 
-const boldFont = fetch(
-	"https://github.com/tokotype/PlusJakartaSans/raw/refs/heads/master/fonts/ttf/PlusJakartaSans-Bold.ttf",
-).then((res) => res.arrayBuffer());
-
-const regularFont = fetch(
-	"https://github.com/tokotype/PlusJakartaSans/raw/refs/heads/master/fonts/ttf/PlusJakartaSans-Regular.ttf",
-).then((res) => res.arrayBuffer());
-
-const [regular, bold] = await Promise.all([regularFont, boldFont]);
+const { regular, bold } = await fonts();
 
 const Template = (props: TemplateProps) => {
 	const title = props.title ? props.title : "Rifkidhan";
