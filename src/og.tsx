@@ -1,5 +1,5 @@
 import { Hono } from "@hono/hono";
-import { fonts, initialize } from "~/lib/initialize-og.ts";
+import { initialize } from "~/lib/initialize-og.ts";
 import satori from "satori";
 import { Resvg } from "https://esm.sh/@resvg/resvg-wasm";
 import type { JSX } from "react";
@@ -136,13 +136,20 @@ const Template = (props: TemplateProps): JSX.Element => {
 	);
 };
 
+const boldFont = fetch(
+	"https://github.com/tokotype/PlusJakartaSans/raw/refs/heads/master/fonts/ttf/PlusJakartaSans-Bold.ttf",
+).then((res) => res.arrayBuffer());
+
+const regularFont = fetch(
+	"https://github.com/tokotype/PlusJakartaSans/raw/refs/heads/master/fonts/ttf/PlusJakartaSans-Regular.ttf",
+).then((res) => res.arrayBuffer());
+
+const [regular, bold] = await Promise.all([regularFont, boldFont]);
+
 await initialize();
 
 og.get("/", (c) => {
 	const { title, content, color } = c.req.query();
-
-	const regular = font.regular;
-	const bold = font.bold;
 
 	const results = new ReadableStream({
 		async start(controller) {
