@@ -1,7 +1,4 @@
-import { Hono } from "@hono/hono";
-import { initialize } from "~/lib/initialize-og.ts";
-import satori from "satori";
-import { Resvg } from "https://esm.sh/@resvg/resvg-wasm";
+import React from "react"
 
 interface TemplateProps {
 	title?: string;
@@ -9,19 +6,8 @@ interface TemplateProps {
 	color?: string;
 }
 
-const og = new Hono();
 
-const boldFont = fetch(
-	"https://github.com/tokotype/PlusJakartaSans/raw/refs/heads/master/fonts/ttf/PlusJakartaSans-Bold.ttf",
-).then((res) => res.arrayBuffer());
-
-const regularFont = fetch(
-	"https://github.com/tokotype/PlusJakartaSans/raw/refs/heads/master/fonts/ttf/PlusJakartaSans-Regular.ttf",
-).then((res) => res.arrayBuffer());
-
-const [regular, bold] = await Promise.all([regularFont, boldFont]);
-
-const Template = (props: TemplateProps) => {
+const Template = (props: React) => {
 	const title = props.title ? props.title : "Rifkidhan";
 
 	const colorPallete = (color?: string) => {
@@ -142,48 +128,3 @@ const Template = (props: TemplateProps) => {
 		</div>
 	);
 };
-
-await initialize();
-og.get("/", (c) => {
-	const { title, content, color } = c.req.query();
-
-	const results = new ReadableStream({
-		async start(controller) {
-			const svg = await satori(<Template title={title} content={content} color={color} />, {
-				height: 630,
-				width: 1200,
-				fonts: [{
-					name: "Plus Jakarta Sans",
-					data: regular,
-					style: "normal",
-					weight: 400,
-				}, {
-					name: "Plus Jakarta Sans",
-					data: bold,
-					style: "normal",
-					weight: 700,
-				}],
-			});
-			const reSvgjs = new Resvg(svg, {
-				fitTo: {
-					mode: "width",
-					value: 1200,
-				},
-			});
-
-			const render = reSvgjs.render();
-
-			controller.enqueue(render.asPng());
-			controller.close();
-		},
-	});
-
-	return c.body(results, 200, {
-		"Content-Type": "image/png",
-		"Cache-Control": Deno.env.get("DEV")
-			? "no-cache, no-store"
-			: "public, max-age=31536000, no-transform, immutable",
-	});
-});
-
-export default og;
