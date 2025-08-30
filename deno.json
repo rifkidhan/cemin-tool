@@ -1,15 +1,17 @@
 {
 	"$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
 	"tasks": {
-		"dev": "deno run --env-file=.env.local --watch -REN main.ts"
+		"dev": "DEV=true deno run --watch -REN main.ts"
 	},
 	"compilerOptions": {
-		"jsx": "react",
-		"jsxFactory": "React.createElement",
-		"jsxFragmentFactory": "React.Fragment"
+		"jsx": "react-jsx",
+		"jsxImportSource": "react"
 	},
 	"imports": {
-		"@hono/hono": "jsr:@hono/hono@^4.6.16",
+		"@hono/hono": "jsr:@hono/hono@^4.9.5",
+		"@types/react": "npm:@types/react@^19.1.12",
+		"react": "npm:react@^18.3.1",
+		"satori": "npm:satori@^0.18.1",
 		"~/": "./src/"
 	},
 	"fmt": {
