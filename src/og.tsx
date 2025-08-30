@@ -2,6 +2,7 @@ import { Hono } from "@hono/hono";
 import { fonts, initialize } from "~/lib/initialize-og.ts";
 import satori from "satori";
 import { Resvg } from "https://esm.sh/@resvg/resvg-wasm";
+import type { JSX } from "react";
 
 interface TemplateProps {
 	title?: string;
@@ -11,9 +12,9 @@ interface TemplateProps {
 
 const og = new Hono();
 
-const { regular, bold } = await fonts();
+const font = await fonts();
 
-const Template = (props: TemplateProps) => {
+const Template = (props: TemplateProps): JSX.Element => {
 	const title = props.title ? props.title : "Rifkidhan";
 
 	const colorPallete = (color?: string) => {
@@ -136,8 +137,12 @@ const Template = (props: TemplateProps) => {
 };
 
 await initialize();
+
 og.get("/", (c) => {
 	const { title, content, color } = c.req.query();
+
+	const regular = font.regular;
+	const bold = font.bold;
 
 	const results = new ReadableStream({
 		async start(controller) {
