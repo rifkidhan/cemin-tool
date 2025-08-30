@@ -12,8 +12,6 @@ interface TemplateProps {
 
 const og = new Hono();
 
-const font = await fonts();
-
 const Template = (props: TemplateProps): JSX.Element => {
 	const title = props.title ? props.title : "Rifkidhan";
 
